@@ -41,7 +41,7 @@ LL_TYPE_INSTANCE_HOOK(
     try {
         for (auto& info : resourcePacks) {
             std::string uuid = info.mPackIdVersion.mId.asString();
-            std::transform(uuid.begin(), uuid.end(), uuid.begin(), toupper);
+            std::transform(uuid.begin(), uuid.end(), uuid.begin(), tolower);
             info.mContentKey = mConfig.ResourcePacks[uuid];
         }
     } catch (...) {
