@@ -52,18 +52,18 @@ auto enable(ll::plugin::NativePlugin& /*self*/) -> bool { return true; }
 auto load(ll::plugin::NativePlugin& self) -> bool {
     auto& logger       = self.getLogger();
     selfPluginInstance = std::make_unique<std::reference_wrapper<ll::plugin::NativePlugin>>(self);
-    if (!ll::config::loadConfig(mConfig, self.getConfigDir())) {
-        ll::config::saveConfig(mConfig, self.getConfigDir());
+    if (!ll::config::loadConfig(mConfig, self.getConfigDir() / "config.json")) {
+        ll::config::saveConfig(mConfig, self.getConfigDir() / "config.json");
     }
     ResourcePacksInfoPacketHook::hook();
-    logger.info("{0} resource packs's key has loaded", mConfig.ResourcePacks.size());
+    logger.info("{0} found resource packs's ContentKey", mConfig.ResourcePacks.size());
     return true;
 }
 
 auto unload(ll::plugin::NativePlugin& self) -> bool {
     auto& logger = self.getLogger();
     selfPluginInstance.reset();
-    ll::config::saveConfig(mConfig, self.getConfigDir());
+    ll::config::saveConfig(mConfig, self.getConfigDir() / "config.json");
     ResourcePacksInfoPacketHook::unhook();
     logger.info("unloaded");
 
