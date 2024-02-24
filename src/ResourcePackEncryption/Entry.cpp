@@ -56,7 +56,7 @@ auto load(ll::plugin::NativePlugin& self) -> bool {
         ll::config::saveConfig(mConfig, self.getConfigDir() / "config.json");
     }
     ResourcePacksInfoPacketHook::hook();
-    logger.info("{0} found resource packs's ContentKey", mConfig.ResourcePacks.size());
+    logger.info("Found {0} resource packs's ContentKey", mConfig.ResourcePacks.size());
     return true;
 }
 
