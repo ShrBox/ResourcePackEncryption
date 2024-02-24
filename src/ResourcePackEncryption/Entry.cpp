@@ -3,6 +3,7 @@
 #include "Config.h"
 #include <algorithm>
 #include <cctype>
+#include <exception>
 #include <fmt/format.h>
 #include <functional>
 #include <ll/api/Config.h>
@@ -37,10 +38,14 @@ LL_TYPE_INSTANCE_HOOK(
     bool                                               forceServerPacksEnabled,
     std::vector<std::pair<std::string, std::string>>&& cdnUrls
 ) {
-    for (auto& info : resourcePacks) {
-        std::string uuid = info.mPackIdVersion.mId.asString();
-        std::transform(uuid.begin(), uuid.end(), uuid.begin(), toupper);
-        info.mContentKey = mConfig.ResourcePacks[uuid];
+    try {
+        for (auto& info : resourcePacks) {
+            std::string uuid = info.mPackIdVersion.mId.asString();
+            std::transform(uuid.begin(), uuid.end(), uuid.begin(), toupper);
+            info.mContentKey = mConfig.ResourcePacks[uuid];
+        }
+    } catch (...) {
+        return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls));
     }
     return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls));
 }
