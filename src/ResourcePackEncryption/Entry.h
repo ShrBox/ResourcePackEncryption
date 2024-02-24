@@ -1,9 +1,9 @@
 #pragma once
-
 #include <ll/api/plugin/NativePlugin.h>
 
-namespace change_this {
+
+namespace ResourcePackEncryption {
 
 [[nodiscard]] auto getSelfPluginInstance() -> ll::plugin::NativePlugin&;
 
-} // namespace change_this
+} // namespace ResourcePackEncryption
