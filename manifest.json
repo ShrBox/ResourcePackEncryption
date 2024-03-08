@@ -1,5 +1,8 @@
 {
     "name": "${pluginName}",
     "entry": "${pluginFile}",
-    "type": "native"
+    "type": "native",
+    "author": "ShrBox",
+    "description": "Provide BDS support for resource pack encryption",
+    "version": "0.1.1"
 }
