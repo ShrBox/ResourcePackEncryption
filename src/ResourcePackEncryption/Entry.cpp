@@ -30,13 +30,14 @@ LL_TYPE_INSTANCE_HOOK(
     ResourcePacksInfoPacket,
     "??0ResourcePacksInfoPacket@@QEAA@_NAEAV?$vector@UPackInfoData@@V?$allocator@UPackInfoData@@@std@@@std@@10$$QEAV?$"
     "vector@U?$pair@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@V?$allocator@U?$pair@V?$"
-    "basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@@2@@2@@Z",
+    "basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@@2@@2@0@Z",
     ResourcePacksInfoPacket*,
     bool                                               resourcePackRequired,
     std::vector<PackInfoData>&                         behaviorPacks,
     std::vector<PackInfoData>&                         resourcePacks,
     bool                                               forceServerPacksEnabled,
-    std::vector<std::pair<std::string, std::string>>&& cdnUrls
+    std::vector<std::pair<std::string, std::string>>&& cdnUrls,
+    bool                                               unk
 ) {
     try {
         for (auto& info : resourcePacks) {
@@ -45,9 +46,16 @@ LL_TYPE_INSTANCE_HOOK(
             info.mContentKey = mConfig.ResourcePacks[uuid];
         }
     } catch (...) {
-        return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls));
+        return origin(
+            resourcePackRequired,
+            behaviorPacks,
+            resourcePacks,
+            forceServerPacksEnabled,
+            std::move(cdnUrls),
+            unk
+        );
     }
-    return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls));
+    return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls), unk);
 }
 
 auto disable(ll::plugin::NativePlugin& /*self*/) -> bool { return true; }
