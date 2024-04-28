@@ -1,6 +1,8 @@
 #include "Entry.h"
 
 #include "Config.h"
+#include "ll/api/plugin/NativePlugin.h"
+#include "ll/api/plugin/RegisterHelper.h"
 #include <algorithm>
 #include <cctype>
 #include <exception>
@@ -15,14 +17,10 @@
 #include <memory>
 #include <stdexcept>
 
+namespace resourcepack_encryption {
 
-namespace ResourcePackEncryption {
-
-namespace {
-
-Config mConfig;
-std::unique_ptr<std::reference_wrapper<ll::plugin::NativePlugin>>
-    selfPluginInstance; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static std::unique_ptr<ResourcePackEncryption> instance;
+resourcepack_encryption::Config                mConfig;
 
 LL_TYPE_INSTANCE_HOOK(
     ResourcePacksInfoPacketHook,
@@ -58,54 +56,39 @@ LL_TYPE_INSTANCE_HOOK(
     return origin(resourcePackRequired, behaviorPacks, resourcePacks, forceServerPacksEnabled, std::move(cdnUrls), unk);
 }
 
-auto disable(ll::plugin::NativePlugin& /*self*/) -> bool { return true; }
+ResourcePackEncryption& ResourcePackEncryption::getInstance() { return *instance; }
 
-auto enable(ll::plugin::NativePlugin& /*self*/) -> bool { return true; }
-
-auto load(ll::plugin::NativePlugin& self) -> bool {
-    auto& logger       = self.getLogger();
-    selfPluginInstance = std::make_unique<std::reference_wrapper<ll::plugin::NativePlugin>>(self);
-    if (!ll::config::loadConfig(mConfig, self.getConfigDir() / "config.json")) {
-        ll::config::saveConfig(mConfig, self.getConfigDir() / "config.json");
+bool ResourcePackEncryption::load() {
+    getSelf().getLogger().info("Loading...");
+    // Code for loading the plugin goes here.
+    if (!ll::config::loadConfig(mConfig, getSelf().getConfigDir() / "config.json")) {
+        ll::config::saveConfig(mConfig, getSelf().getConfigDir() / "config.json");
     }
     ResourcePacksInfoPacketHook::hook();
-    logger.info("Found {0} resource packs's ContentKey", mConfig.ResourcePacks.size());
+    getSelf().getLogger().info("Found {0} resource packs's ContentKey", mConfig.ResourcePacks.size());
     return true;
 }
 
-auto unload(ll::plugin::NativePlugin& self) -> bool {
-    auto& logger = self.getLogger();
-    selfPluginInstance.reset();
-    ll::config::saveConfig(mConfig, self.getConfigDir() / "config.json");
+bool ResourcePackEncryption::enable() {
+    getSelf().getLogger().info("Enabling...");
+    // Code for enabling the plugin goes here.
+    return true;
+}
+
+bool ResourcePackEncryption::disable() {
+    getSelf().getLogger().info("Disabling...");
+    // Code for disabling the plugin goes here.
+    ll::config::saveConfig(mConfig, getSelf().getConfigDir() / "config.json");
     ResourcePacksInfoPacketHook::unhook();
-    logger.info("unloaded");
-
     return true;
 }
 
-} // namespace
-
-auto getSelfPluginInstance() -> ll::plugin::NativePlugin& {
-    if (!selfPluginInstance) {
-        throw std::runtime_error("selfPluginInstance is null");
-    }
-
-    return *selfPluginInstance;
+bool ResourcePackEncryption::unload() {
+    ll::config::saveConfig(mConfig, getSelf().getConfigDir() / "config.json");
+    ResourcePacksInfoPacketHook::unhook();
+    return true;
 }
 
-} // namespace ResourcePackEncryption
+} // namespace resourcepack_encryption
 
-extern "C" {
-_declspec(dllexport) auto ll_plugin_disable(ll::plugin::NativePlugin& self) -> bool {
-    return ResourcePackEncryption::disable(self);
-}
-_declspec(dllexport) auto ll_plugin_enable(ll::plugin::NativePlugin& self) -> bool {
-    return ResourcePackEncryption::enable(self);
-}
-_declspec(dllexport) auto ll_plugin_load(ll::plugin::NativePlugin& self) -> bool {
-    return ResourcePackEncryption::load(self);
-}
-_declspec(dllexport) auto ll_plugin_unload(ll::plugin::NativePlugin& self) -> bool {
-    return ResourcePackEncryption::unload(self);
-}
-}
+LL_REGISTER_PLUGIN(resourcepack_encryption::ResourcePackEncryption, resourcepack_encryption::instance);
