@@ -1,8 +1,8 @@
 {
-    "name": "${pluginName}",
-    "entry": "${pluginFile}",
+    "name": "${modName}",
+    "entry": "${modFile}",
+    "version": "${modVersion}",
     "type": "native",
     "author": "ShrBox",
-    "description": "Provide BDS support for resource pack encryption",
-    "version": "0.5.0"
+    "description": "Provide BDS support for resource pack encryption"
 }
