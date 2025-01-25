@@ -1,19 +1,19 @@
 {
     "format_version": 2,
     "tooth": "github.com/ShrBox/ResourcePackEncryption",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "info": {
         "name": "ResourcePackEncryption",
         "description": "Provide BDS support for resource pack encryption",
         "author": "ShrBox",
         "tags": [
-            "levilamina",
-            "plugin"
+            "platform:levilamina",
+            "type:mod"
         ]
     },
-    "asset_url": "https://github.com/ShrBox/ResourcePackEncryption/releases/download/v0.6.0/ResourcePackEncryption-windows-x64.zip",
+    "asset_url": "https://github.com/ShrBox/ResourcePackEncryption/releases/download/v0.6.1/ResourcePackEncryption-windows-x64.zip",
     "prerequisites": {
-        "github.com/LiteLDev/LeviLamina": "1.0.0-rc.3"
+        "github.com/LiteLDev/LeviLamina": "1.0.x"
     },
     "files": {
         "place": [
