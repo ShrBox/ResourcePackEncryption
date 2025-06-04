@@ -1,9 +1,7 @@
 #include "Entry.h"
 
 #include "Config.h"
-#include "fmt/format.h"
 #include "ll/api/Config.h"
-#include "ll/api/io/FileUtils.h"
 #include "ll/api/memory/Hook.h"
 #include "ll/api/mod/RegisterHelper.h"
 #include "mc/deps/core/resource/PackIdVersion.h"
@@ -20,7 +18,6 @@
 
 namespace resourcepack_encryption {
 
-static std::unique_ptr<ResourcePackEncryption> instance;
 resourcepack_encryption::Config                mConfig;
 
 LL_TYPE_INSTANCE_HOOK(
