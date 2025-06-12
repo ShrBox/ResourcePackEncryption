@@ -14,6 +14,8 @@
 #include "mc/resources/PackManifest.h"
 #include "mc/resources/ResourcePack.h"
 #include "mc/resources/ResourcePackRepository.h"
+#include "mc/server/CDNConfig.h"
+#include "mc/server/ServerInstance.h"
 
 PackIdVersion::PackIdVersion(const PackIdVersion&) = default;
 
@@ -31,6 +33,7 @@ bool ResourcePackEncryption::load() {
         ll::config::saveConfig(mConfig, getSelf().getConfigDir() / "config.json");
     }
     getSelf().getLogger().info("Found {0} resource packs's ContentKey", mConfig.ResourcePacks.size());
+    getSelf().getLogger().info("Found {0} resource packs's CDN URL", mConfig.ResourcePacksCDN.size());
     return true;
 }
 
@@ -41,7 +44,20 @@ bool ResourcePackEncryption::enable() {
             ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert({pack->getManifest().mIdentity, key});
         }
     }
-    getSelf().getLogger().info("Loaded {0} resource packs's ContentKey", ll::service::getServerNetworkHandler()->mPackIdToContentKey->size());
+    auto& cdnUrls = ll::service::getServerInstance()
+                        ->mCDNConfig.get()
+                        ->mUnk811154.as<std::vector<std::pair<std::string, std::string>>>();
+    for (auto& [uuid, url] : mConfig.ResourcePacksCDN) {
+        auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(uuid));
+        if (pack) {
+            cdnUrls.emplace_back(pack->getManifest().mIdentity->asString(), url);
+        }
+    }
+    getSelf().getLogger().info(
+        "Loaded {0} resource packs's ContentKey",
+        ll::service::getServerNetworkHandler()->mPackIdToContentKey->size()
+    );
+    getSelf().getLogger().info("Loaded {0} resource packs's CDN URL", cdnUrls.size());
     return true;
 }
 
