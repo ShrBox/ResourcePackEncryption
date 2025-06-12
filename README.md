@@ -4,7 +4,7 @@ Provide BDS support for resource pack encryption
 
 ## Encryption
 
-You can encryption your resource packs on websites like https://encryptmypack.com/
+You can encryption your resource packs on websites like [PackCrypt](https://endstone-insider.github.io/pack-crypt/)
 
 ## Example configuration file
 
