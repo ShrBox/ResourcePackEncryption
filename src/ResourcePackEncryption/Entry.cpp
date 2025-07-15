@@ -17,8 +17,6 @@
 #include "mc/server/CDNConfig.h"
 #include "mc/server/ServerInstance.h"
 
-PackIdVersion::PackIdVersion(const PackIdVersion&) = default;
-
 namespace resourcepack_encryption {
 
 resourcepack_encryption::Config mConfig;
@@ -44,9 +42,7 @@ bool ResourcePackEncryption::enable() {
             ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert({pack->getManifest().mIdentity, key});
         }
     }
-    auto& cdnUrls = ll::service::getServerInstance()
-                        ->mCDNConfig.get()
-                        ->mUnk811154.as<std::vector<std::pair<std::string, std::string>>>();
+    auto& cdnUrls = ll::service::getServerInstance()->mCDNConfig.get()->mPackCDNUrls.get();
     for (auto& [uuid, url] : mConfig.ResourcePacksCDN) {
         auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(uuid));
         if (pack) {
