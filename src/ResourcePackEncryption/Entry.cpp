@@ -11,6 +11,7 @@
 #include "mc/network/packet/PackInfoData.h"
 #include "mc/network/packet/ResourcePacksInfoPacket.h"
 #include "mc/platform/UUID.h"
+#include "mc/resources/Pack.h"
 #include "mc/resources/PackManifest.h"
 #include "mc/resources/ResourcePack.h"
 #include "mc/resources/ResourcePackRepository.h"
@@ -39,14 +40,16 @@ bool ResourcePackEncryption::enable() {
     for (auto& [id, key] : mConfig.ResourcePacks) {
         auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(id));
         if (pack) {
-            ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert({pack->getManifest().mIdentity, key});
+            ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert(
+                {pack->mPack->mManifest->mIdentity, key}
+            );
         }
     }
     auto& cdnUrls = ll::service::getServerInstance()->mCDNConfig.get()->mPackCDNUrls.get();
     for (auto& [uuid, url] : mConfig.ResourcePacksCDN) {
         auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(uuid));
         if (pack) {
-            cdnUrls.emplace_back(pack->getManifest().mIdentity->asString(), url);
+            cdnUrls.emplace_back(pack->mPack->mManifest->mIdentity->asString(), url);
         }
     }
     getSelf().getLogger().info(
