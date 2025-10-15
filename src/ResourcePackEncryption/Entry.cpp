@@ -39,7 +39,7 @@ bool ResourcePackEncryption::load() {
 bool ResourcePackEncryption::enable() {
     for (auto& [id, key] : mConfig.ResourcePacks) {
         auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(id));
-        if (pack) {
+        if (pack && pack->mPack->mManifest) {
             ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert(
                 {pack->mPack->mManifest->mIdentity, key}
             );
@@ -48,7 +48,7 @@ bool ResourcePackEncryption::enable() {
     auto& cdnUrls = ll::service::getServerInstance()->mCDNConfig.get()->mPackCDNUrls.get();
     for (auto& [uuid, url] : mConfig.ResourcePacksCDN) {
         auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(uuid));
-        if (pack) {
+        if (pack && pack->mPack->mManifest) {
             cdnUrls.emplace_back(pack->mPack->mManifest->mIdentity->asString(), url);
         }
     }
