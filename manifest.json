@@ -3,6 +3,7 @@
     "entry": "${modFile}",
     "version": "${modVersion}",
     "type": "native",
+    "platform": "${modPlatform}",
     "author": "ShrBox",
     "description": "Provide BDS support for resource pack encryption"
 }
