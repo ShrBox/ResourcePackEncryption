@@ -15,9 +15,11 @@
 #include "mc/server/CDNConfig.h"
 #include "mc/server/ServerInstance.h"
 
+SemVersion::SemVersion(SemVersion const&) = default;
+
 namespace resourcepack_encryption {
 
-resourcepack_encryption::Config mConfig;
+Config mConfig;
 
 ResourcePackEncryption& ResourcePackEncryption::getInstance() {
     static ResourcePackEncryption instance;
