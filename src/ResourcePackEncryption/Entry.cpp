@@ -9,9 +9,9 @@
 #include "mc/network/ServerNetworkHandler.h"
 #include "mc/platform/UUID.h"
 #include "mc/resources/Pack.h"
-#include "mc/resources/PackManifest.h"
 #include "mc/resources/ResourcePack.h"
 #include "mc/resources/ResourcePackRepository.h"
+#include "mc/scripting/modules/PackManifest.h"
 #include "mc/server/CDNConfig.h"
 #include "mc/server/ServerInstance.h"
 
