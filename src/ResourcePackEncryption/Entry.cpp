@@ -35,18 +35,22 @@ bool ResourcePackEncryption::load() {
 
 bool ResourcePackEncryption::enable() {
     for (auto& [id, key] : mConfig.ResourcePacks) {
-        auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(id));
-        if (pack && pack->mPack->mManifest) {
-            ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert(
-                {pack->mPack->mManifest->mIdentity, key}
-            );
+        auto packs = ll::service::getResourcePackRepository()->getResourcePacksByUUID(mce::UUID(id));
+        for (auto& pack : packs) {
+            if (pack && pack->mImpl->mPack->mManifest) {
+                ll::service::getServerNetworkHandler()->mPackIdToContentKey->insert(
+                    {pack->mImpl->mPack->mManifest->mIdentity, key}
+                );
+            }
         }
     }
     auto& cdnUrls = ll::service::getServerInstance()->mCDNConfig.get()->mPackCDNUrls.get();
     for (auto& [uuid, url] : mConfig.ResourcePacksCDN) {
-        auto pack = ll::service::getResourcePackRepository()->getResourcePackByUUID(mce::UUID(uuid));
-        if (pack && pack->mPack->mManifest) {
-            cdnUrls.emplace_back(pack->mPack->mManifest->mIdentity->asString(), url);
+        auto packs = ll::service::getResourcePackRepository()->getResourcePacksByUUID(mce::UUID(uuid));
+        for (auto& pack : packs) {
+            if (pack && pack->mImpl->mPack->mManifest) {
+                cdnUrls.emplace_back(pack->mImpl->mPack->mManifest->mIdentity->asString(), url);
+            }
         }
     }
     getSelf().getLogger().info(
